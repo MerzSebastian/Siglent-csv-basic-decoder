@@ -1,6 +1,6 @@
 # Author: Sebastian Merz
 # Licence: GNU General Public License v3.0
-# Description: Script for testing the decode.py file and making sure that it doesnt break
+# Description: Script for testing the decode.py code and making sure that it doesnt break
 # Example: test.py
 
 import os
