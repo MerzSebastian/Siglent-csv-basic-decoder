@@ -14,6 +14,8 @@ This is a little script for converting digital data which you captured with you'
 * Alternatively you can use the following command to start the script via the command line
 ```decode.py <input_file_or_folder> <output_folder>```
 ![ ](https://github.com/MerzSebastian/Siglent-csv-basic-decoder/blob/main/documentation/output.png)
+* The output is also saved in a text document named after the current date and time
+![ ](https://github.com/MerzSebastian/Siglent-csv-basic-decoder/blob/main/documentation/output_textfile.png)
 
 
 # How it Works
