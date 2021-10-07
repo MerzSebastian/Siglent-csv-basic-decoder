@@ -3,7 +3,10 @@
 # Description: Script for implementing testing functions to keep the testing code clean
 # Example usage:
 #   from expect import Expect
-#   Expect(1).to_be(1)
+#   Expect(1).to_be(1, "Test1")
+#   Expect(1).to_be_not(2, "Test2")
+#   Expect([1,2,3]).to_include(2, "Test3")
+#   Expect([1,2,3]).to_include_not(5, "Test4")
 
 
 class Expect:
@@ -12,9 +15,32 @@ class Expect:
     def __init__(self, value):
         self.value = value
 
-    def to_be(self, value):
-        if value == self.value:
-            print('SUCCESS!')
+    def to_be(self, value, description):
+        return self.__to_be(value, description, True)
+
+    def to_be_not(self, value, description):
+        return self.__to_be(value, description, False)
+
+    def __to_be(self, value, description, positive):
+        status = (value == self.value) if positive else (value != self.value)
+        if status:
+            print(description, 'SUCCESS!')
             return True
         else:
-            raise ValueError('Expected', self.value, 'to be', value)
+            print(description, f'FAILED! Expected { self.value } to{ "" if positive else " not"} be { value }')
+            return False
+
+    def to_include(self, value, description):
+        return self.__to_include(value, description, True)
+
+    def to_include_not(self, value, description):
+        return self.__to_include(value, description, False)
+
+    def __to_include(self, value, description, positive):
+        status = (value in self.value) if positive else (value not in self.value)
+        if status:
+            print(description, 'SUCCESS!')
+            return True
+        else:
+            print(description, f'FAILED! Expected { self.value } to{ "" if positive else " not"} include {value}')
+            return False

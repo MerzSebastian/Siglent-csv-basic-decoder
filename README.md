@@ -4,17 +4,18 @@
 This is a little script for converting digital data which you captured with you're Siglent oscilloscope (CSV data) into binary format
 
 # How to use
-* Get a nice single shot of all the data.
+* Get a nice single shot of all the data.<br/>
 ![ ](https://github.com/MerzSebastian/Siglent-csv-basic-decoder/blob/main/documentation/siglent_sds1000x.png)
-* Save the shot as a binary on a USB stick and transfer it to your pc or download it directly over the Web Control over your browser (Waveform save)
+* Save the shot as a binary on a USB stick and transfer it to your pc or download it directly over the Web Control over your browser (Waveform save)<br/>
 ![ ](https://github.com/MerzSebastian/Siglent-csv-basic-decoder/blob/main/documentation/siglent_sds1000x_save.png)
-* Use the bin2csv tool which siglent is providing over the Web Control (Bin_to_CSV_Tool)
+* Use the bin2csv tool which siglent is providing over the Web Control (Bin_to_CSV_Tool)<br/>
 ![ ](https://github.com/MerzSebastian/Siglent-csv-basic-decoder/blob/main/documentation/bin2csv.png)
-* Drag and Drop your file or folder onto the decode.py to start the decoding process
-* Alternatively you can use the following command to start the script via the command line
-```decode.py <input_file_or_folder> <output_folder>```
+* Drag and Drop your file or folder onto the decode.py script to start the decoding process
+* Alternatively you can use the following command to start the script via the command line <br/>
+```decode.py <input_file_or_folder> <output_folder>```<br/>
 ![ ](https://github.com/MerzSebastian/Siglent-csv-basic-decoder/blob/main/documentation/output.png)
-
+* After the script is finished it will create a new json file on you specified output folder which will look something like this (decoding of multiple files)<br/>
+![ ](https://github.com/MerzSebastian/Siglent-csv-basic-decoder/blob/main/documentation/output_json.png)
 
 # How it Works
 In this section we deal with the flow of the main functions of the script
@@ -40,4 +41,5 @@ It's recommended to use the test.py file for development to make sure you don't 
 * Add Siglent binary decoder, so you don't need two scripts
 * Add error rate to console output
 * Refactor debugging output
-* Change format for saving data - json or csv
+* ~~Change format for saving data - json or csv~~ => json
+* parallelize decoding of multiple files

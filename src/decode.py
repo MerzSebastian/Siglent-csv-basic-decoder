@@ -9,7 +9,7 @@ import sys
 import time
 import os as os
 from datetime import datetime
-
+import json
 
 def decode_normalized_data(val_x, val_y, single_pulse_length):
     decoded = []
@@ -23,16 +23,10 @@ def decode_normalized_data(val_x, val_y, single_pulse_length):
                 decoded.append(0)
     return decoded
 
-
 headers = ['Second', 'Volt']
-filePaths = []
-if os.path.isdir(sys.argv[1]):
-    for filename in os.listdir(sys.argv[1]):
-        filePaths.append(sys.argv[1] + '/' + filename)
-else:
-    filePaths.append(sys.argv[1])
+filePaths = ([os.path.join(sys.argv[1], f) for f in os.listdir(sys.argv[1]) if f.endswith('.csv')] if os.path.isdir(sys.argv[1]) else [sys.argv[1]])
 
-result = ""
+result = []
 lastTime = time.perf_counter()
 startTime = time.perf_counter()
 for file in filePaths:
@@ -75,15 +69,20 @@ for file in filePaths:
     print("# Decoding data...")
     decoded_data = decode_normalized_data(x, y, singlePulseLength)
     decoded_string_data = ''.join(str(val) for val in decoded_data)
-    result += decoded_string_data + '\n'
     print("# # Elapsed time:", round((time.perf_counter() - lastTime)*1000), "ms")
     print("# # Decoded data:", decoded_string_data)
     lastTime = time.perf_counter()
+    result.append({
+        "filename": os.path.basename(file),
+        "date": datetime.now().strftime("%d.%m.%Y %H:%M:%S"),
+        "size": len(decoded_string_data),
+        "data": decoded_string_data
+    })
 
 print("# # # # # # # # # # # # # # # # # # # # # #")
 print("# Writing output file...")
-f = open(sys.argv[2] + str(datetime.now().strftime("%d-%m-%Y-%H-%M-%S")) + ".txt", "x")
-f.write(result)
+f = open(os.path.join(sys.argv[2], str(datetime.now().strftime("%d-%m-%Y-%H-%M-%S")) + ".json"), "x")
+f.write(json.dumps(result))
 f.close()
 print("# # Overall time:", round((time.perf_counter() - startTime)*1000), "ms")
 print("# # # # # # # # # # # # # # # # # # # # # #")
