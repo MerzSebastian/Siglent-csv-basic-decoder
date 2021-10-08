@@ -9,7 +9,7 @@
 #   Expect([1,2,3]).to_include_not(5, "Test4")
 
 
-class Expect:
+class expect:
     value = ''
 
     def __init__(self, value):
