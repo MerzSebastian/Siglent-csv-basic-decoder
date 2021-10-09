@@ -32,9 +32,8 @@ def decode_normalized_data(val_x, val_y, single_pulse_length):
 
 
 def reformat_raw_data(data):
-    x = [data[0][i][0] for i in range(len(data[0]))]
-    y = [data[0][i][1] for i in range(len(data[0]))]
-    print(data[0] == data[1], "WTF ???????")  # WTF ???????
+    x = [data[i][0] for i in range(len(data))]
+    y = [data[i][1] for i in range(len(data))]
     return x, y
 
 
@@ -77,65 +76,68 @@ def time_overall():
     print("Overall elapsed time:", round((time.perf_counter() - start_time) * 1000), "ms")
 
 
+def calculate(file):
+    print("# # # # # # # # # # # # # # # # # # # # # #")
+    print("Reading and converting binary data", file, "...")
+    raw_data = bin(file).convert()[0]
+    x, y = reformat_raw_data(raw_data)
+    time_round()
+
+    print("Calculating threshold and cleaning data...")
+    threshold = max(y) / 2
+    y = [(True if i > threshold else False) for i in y]
+    print("Threshold:", threshold, "Volt")
+    time_round()
+
+    print("Removing doubled data points...")
+    x, y = remove_redundant_data_points(x, y)
+    time_round()
+
+    print("Shifting time value so it starts at 0...")
+    x = [x[i] - min(x) for i in range(len(x))]
+    time_round()
+
+    print("Getting shortest pulse length...")
+    singlePulseLength = min([abs(x[i] - x[i + 2]) for i in range(len(y) - 2)])
+    print("Shorted pulse length:", singlePulseLength)
+    time_round()
+
+    print("Decoding data...")
+    decoded_data, gError = decode_normalized_data(x, y, singlePulseLength)
+    decoded_string_data = ''.join(str(val) for val in decoded_data)
+    print("Decoded data:", decoded_string_data)
+    time_round()
+
+    # THROW ERROR IF length of < and x are not the same
+
+    return {
+        "date": datetime.now().strftime("%d.%m.%Y %H:%M:%S"),
+        "detectionThreshold": format(threshold, '.12f'),
+        "singlePulseLength": format(singlePulseLength, '.12f'),
+        "dataPointsRaw": len(raw_data),
+        "maxError": format(max(gError), '.12f'),
+        "avgError": format(statistics.mean(gError), '.12f'),
+        "data": {
+            "size": len(decoded_string_data),
+            "bin": decoded_string_data,
+            "times": [format(x, '.12f') for x in x],
+            "errors": [format(e, '.12f') for e in gError]
+        }
+    }
+
+
 def main():
     time_start()
 
-    filePaths = ([os.path.join(sys.argv[1], f) for f in os.listdir(sys.argv[1]) if f.endswith('.bin')] if os.path.isdir(sys.argv[1]) else [sys.argv[1]])
+    file_paths = ([os.path.join(sys.argv[1], f) for f in os.listdir(sys.argv[1]) if f.endswith('.bin')] if os.path.isdir(sys.argv[1]) else [sys.argv[1]])
 
     result = {}
-    for file in filePaths:
-        print("# # # # # # # # # # # # # # # # # # # # # #")
-        print("Reading and converting binary data", file, "...")
-        raw_data = bin(file).convert()[0]
-        x, y = reformat_raw_data(raw_data)
-        time_round()
-
-        print("Calculating threshold and cleaning data...")
-        threshold = max(y) / 2
-        y = [(True if i > threshold else False) for i in y]
-        print("Threshold:", threshold, "Volt")
-        time_round()
-
-        print("Removing doubled data points...")
-        x, y = remove_redundant_data_points(x, y)
-        time_round()
-
-        print("Shifting time value so it starts at 0...")
-        x = [x[i] - min(x) for i in range(len(x))]
-        time_round()
-
-        print("Getting shortest pulse length...")
-        singlePulseLength = min([abs(x[i] - x[i + 2]) for i in range(len(y) - 2)])
-        print("Shorted pulse length:", singlePulseLength)
-        time_round()
-
-        print("Decoding data...")
-        decoded_data, gError = decode_normalized_data(x, y, singlePulseLength)
-        decoded_string_data = ''.join(str(val) for val in decoded_data)
-        print("Decoded data:", decoded_string_data)
-        time_round()
-
-        #THROW ERROR IF length of < and x are not the same
-
-        result[os.path.basename(file)] = {
-            "date": datetime.now().strftime("%d.%m.%Y %H:%M:%S"),
-            "detectionThreshold": format(threshold, '.12f'),
-            "singlePulseLength": format(singlePulseLength, '.12f'),
-            "dataPointsRaw": len(raw_data[0]),
-            "maxError": format(max(gError), '.12f'),
-            "avgError": format(statistics.mean(gError), '.12f'),
-            "data": {
-                "size": len(decoded_string_data),
-                "bin": decoded_string_data,
-                "times": [format(x, '.12f') for x in x],
-                "errors": [format(e, '.12f') for e in gError]
-            }
-        }
+    for file in file_paths:
+        result[os.path.basename(file)] = calculate(file)
 
     print("# # # # # # # # # # # # # # # # # # # # # #")
     print("Writing output file...")
     path = write_output(sys.argv[2], result)
-
     print("Written file:", path)
     time_overall()
     print("# # # # # # # # # # # # # # # # # # # # # #")
