@@ -15,7 +15,21 @@ inputPath = os.path.join(basePath, 'test\samples')
 outputPath = os.path.join(basePath, 'test\output')
 startCommand = ' '.join([mainPath, inputPath, outputPath])
 
-print("TEST: Starting test")
+webfetchMainPath = os.path.join(basePath, 'src\webfetch.py')
+webfetchOutputPath = os.path.join(basePath, 'test\webfetch_output')
+webfetchChromedriverPath = os.path.join(basePath, 'test\chromedriver.exe')
+webfetchUrl = "http://192.168.178.200/Instrument/novnc/vnc_auto.php#"
+startWebfetchCommand = ' '.join([webfetchMainPath, webfetchOutputPath, webfetchChromedriverPath, webfetchUrl])
+
+print("TEST: Starting WEBFETCH test")
+print(startWebfetchCommand)
+os.system(startWebfetchCommand)
+
+
+
+
+
+print("TEST: Starting DECODE test")
 print("TEST: config:")
 print("TEST: main path:", mainPath)
 print("TEST: input path", inputPath)
@@ -23,6 +37,7 @@ print("TEST: output path", outputPath)
 print("TEST: start command", startCommand)
 
 os.system(startCommand)
+
 files = glob.glob(os.path.join(outputPath, '*json'))
 if not files:
     raise ValueError('No output files!')
@@ -68,5 +83,5 @@ expect(len(file["data"]["bin"])).to_be(file["data"]["size"], "JSON should have c
 expect(len(file["data"]["times"])).to_be(file["data"]["size"], "JSON should have correct amount of times") #problem with inlcuded leading and trailing zeros
 expect(len(file["data"]["errors"])).to_be(file["data"]["size"], "JSON should have correct amount of errors")
 
-#for file in os.listdir(outputPath):
-#    os.remove(os.path.join(outputPath, file))
+for file in os.listdir(outputPath):
+    os.remove(os.path.join(outputPath, file))
