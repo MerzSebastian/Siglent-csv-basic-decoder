@@ -40,6 +40,9 @@ def reformat_raw_data(data):
 def remove_redundant_data_points(x, y):
     #x = [([x[i], x[i]]) for i in range(1, len(x) - 1) if (y[i - 1] != y[i]) and (y[i + 1] == y[i])]
     #y = [([1 - y[i], y[i]]) for i in range(1, len(x) - 1) if (y[i - 1] != y[i]) and (y[i + 1] == y[i])]
+
+    # THROW ERROR IF length of < and x are not the same
+
     xx = []
     yy = []
     for i in range(1, len(x) - 1):
@@ -98,30 +101,29 @@ def calculate(file):
     time_round()
 
     print("Getting shortest pulse length...")
-    singlePulseLength = min([abs(x[i] - x[i + 2]) for i in range(len(y) - 2)])
-    print("Shorted pulse length:", singlePulseLength)
+    single_pulse_length = min([abs(x[i] - x[i + 2]) for i in range(len(y) - 2)])
+    print("Shorted pulse length:", single_pulse_length)
     time_round()
 
     print("Decoding data...")
-    decoded_data, gError = decode_normalized_data(x, y, singlePulseLength)
+    decoded_data, error = decode_normalized_data(x, y, single_pulse_length)
     decoded_string_data = ''.join(str(val) for val in decoded_data)
     print("Decoded data:", decoded_string_data)
     time_round()
 
-    # THROW ERROR IF length of < and x are not the same
 
     return {
         "date": datetime.now().strftime("%d.%m.%Y %H:%M:%S"),
         "detectionThreshold": format(threshold, '.12f'),
-        "singlePulseLength": format(singlePulseLength, '.12f'),
+        "singlePulseLength": format(single_pulse_length, '.12f'),
         "dataPointsRaw": len(raw_data),
-        "maxError": format(max(gError), '.12f'),
-        "avgError": format(statistics.mean(gError), '.12f'),
+        "maxError": format(max(error), '.12f'),
+        "avgError": format(statistics.mean(error), '.12f'),
         "data": {
             "size": len(decoded_string_data),
             "bin": decoded_string_data,
             "times": [format(x, '.12f') for x in x],
-            "errors": [format(e, '.12f') for e in gError]
+            "errors": [format(e, '.12f') for e in error]
         }
     }
 
