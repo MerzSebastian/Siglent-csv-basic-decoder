@@ -44,20 +44,3 @@ class expect:
         else:
             print(description, f'FAILED! Expected { self.value } to{ "" if positive else " not"} include {value}')
             return False
-
-    def to_json_include(self, value, description):
-        return self.__to_json_include(value, description, True)
-
-    def to_json_include_not(self, value, description):
-        return self.__to_json_include(value, description, False)
-
-    def __to_json_include(self, value, description, positive):
-        testInputVALUE = {"filename": "Analoxg_Trace1.csv", "size": 1149} #ToDo: need to implement so i can test if part of a json exists in another one
-
-        status = (value in self.value) if positive else (value not in self.value)
-        if status:
-            print(description, 'SUCCESS!')
-            return True
-        else:
-            print(description, f'FAILED! Expected { self.value } to{ "" if positive else " not"} include {value}:{data}')
-            return False
