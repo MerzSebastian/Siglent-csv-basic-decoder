@@ -12,6 +12,9 @@ from datetime import datetime
 import json
 import statistics
 
+start_time = 0
+last_time = 0
+
 
 def calculate_error(current_pulse_length, single_pulse_length, pulse_count):
     return [(current_pulse_length % (pulse_count * single_pulse_length)) for _ in range(pulse_count)] #maybe calculating error outside of foreach is more efficient ? i dont know. should be fine
@@ -55,13 +58,12 @@ def write_output(path, data):
     f.close()
     return name
 
-start_time = 0
-last_time = 0
 
 def time_round():
     global last_time
     print("Elapsed time:", round((time.perf_counter() - last_time)*1000), "ms")
     last_time = time.perf_counter()
+
 
 def time_start():
     global last_time
@@ -69,9 +71,11 @@ def time_start():
     last_time = time.perf_counter()
     start_time = time.perf_counter()
 
+
 def time_overall():
     global start_time
     print("Overall elapsed time:", round((time.perf_counter() - start_time) * 1000), "ms")
+
 
 def main():
     time_start()
@@ -135,6 +139,7 @@ def main():
     print("Written file:", path)
     time_overall()
     print("# # # # # # # # # # # # # # # # # # # # # #")
+
 
 if __name__ == "__main__":
     main()
