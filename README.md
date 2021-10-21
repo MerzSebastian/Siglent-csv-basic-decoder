@@ -16,13 +16,13 @@ This is a little script for converting digital data which you captured with you'
 
 ## How to use
 * Get a nice single shot of all the data you want to decode.<br/>
-![ ](https://github.com/MerzSebastian/Siglent-csv-basic-decoder/blob/main/documentation/siglent_sds1000x.png)
+![ ](/documentation/siglent_sds1000x.png)
 * Save the shot as a binary on a USB stick and transfer it to your pc or download it directly over the Web Control over your browser (Waveform save)<br/>
-![ ](https://github.com/MerzSebastian/Siglent-csv-basic-decoder/blob/main/documentation/siglent_sds1000x_save.png)
+![ ](/documentation/siglent_sds1000x_save.png)
 * Drag and Drop your single file or folder with multiple files onto the decode.py script to start the decoding process
 * Alternatively you can use the following command to start the script via the command line <br/>
 ```decode.py <input_file_or_folder> <output_folder>```<br/>
-![ ](https://github.com/MerzSebastian/Siglent-csv-basic-decoder/blob/main/documentation/output.png)
+![ ](/documentation/output.png)
 * If you dont want to manually download the binary files you can use the integrated web fetch functionality. For a single shot do the following.
 These functions are currently not integrated into each other. so for the time being its recommendet to use it like this 
 (Info: the output_folder of the webfetch script should be the same as the input_file_or_folder path from the decode script)<br/>
@@ -103,7 +103,7 @@ Json schema of the output file:
 ```
 ## Binary conversion
 The following image represent the base structure of the binary file format.<br/>
-![ ](https://github.com/MerzSebastian/Siglent-csv-basic-decoder/blob/main/documentation/siglent_sds1000x_bin_file_format.drawio.svg)
+![ ](/documentation/siglent_sds1000x_bin_file_format.drawio.svg)
 
 ## Decoder
 In this section we deal with the flow of the main functions of the script
@@ -129,7 +129,7 @@ I normally would would use this while development to monitor if i broke some cor
 if you want to test the web fetching you need to edit the following property inside the test.py script: 
 ```webfetchUrl```<br/>
 Example output:<br/>
-![ ](https://github.com/MerzSebastian/Siglent-csv-basic-decoder/blob/main/documentation/test_result_example.png)
+![ ](/documentation/test_result_example.png)
 
 
 
