@@ -42,7 +42,6 @@ def remove_redundant_data_points(x, y):
     #y = [([1 - y[i], y[i]]) for i in range(1, len(x) - 1) if (y[i - 1] != y[i]) and (y[i + 1] == y[i])]
 
     # THROW ERROR IF length of < and x are not the same
-
     xx = []
     yy = []
     for i in range(1, len(x) - 1):
@@ -82,14 +81,17 @@ def time_overall():
 def calculate(file):
     print("# # # # # # # # # # # # # # # # # # # # # #")
     print("Reading and converting binary data", file, "...")
-    raw_data = bin(file).convert()[0]
+    raw_data = bin(file).convert()[0] #doesnt work for multiple channels, have to test if channel 2, 3 and 4 works. only testet first i think
     x, y = reformat_raw_data(raw_data)
     time_round()
 
-    print("Calculating threshold and cleaning data...")
+    print("Calculating threshold...")
     threshold = max(y) / 2
-    y = [(True if i > threshold else False) for i in y]
     print("Threshold:", threshold, "Volt")
+    time_round()
+
+    print("Correct time offset...")
+    y = [(True if i > threshold else False) for i in y]
     time_round()
 
     print("Removing doubled data points...")
@@ -102,7 +104,7 @@ def calculate(file):
 
     print("Getting shortest pulse length...")
     single_pulse_length = min([abs(x[i] - x[i + 2]) for i in range(len(y) - 2)])
-    print("Shorted pulse length:", single_pulse_length)
+    print("Shortest pulse length:", format(single_pulse_length, '.12f'))
     time_round()
 
     print("Decoding data...")
@@ -110,7 +112,6 @@ def calculate(file):
     decoded_string_data = ''.join(str(val) for val in decoded_data)
     print("Decoded data:", decoded_string_data)
     time_round()
-
 
     return {
         "date": datetime.now().strftime("%d.%m.%Y %H:%M:%S"),
@@ -126,6 +127,7 @@ def calculate(file):
             "errors": [format(e, '.12f') for e in error]
         }
     }
+
 
 
 def main():
