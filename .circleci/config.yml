@@ -15,7 +15,6 @@ jobs:
           name: Run tests
           command: |
             cd test
-            ls -la
             python test.py
 
 workflows:

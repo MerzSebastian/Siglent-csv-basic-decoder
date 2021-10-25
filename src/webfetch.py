@@ -11,7 +11,7 @@ import re
 
 output_folder = sys.argv[1]
 chrome_driver = sys.argv[2]
-web_ui_url = sys.argv[3]
+web_ui_url = sys.argv[3] + "/Instrument/novnc/vnc_auto.php"
 repeats = sys.argv[4] if len(sys.argv) == 5 else 1
 pause = sys.argv[5] if len(sys.argv) == 6 else 0
 
