@@ -15,7 +15,8 @@ jobs:
           name: Run tests
           command: |
             cd test
-            test.py
+            ls -la
+            python test.py
 
 workflows:
   decoder-test:
