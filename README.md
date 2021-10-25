@@ -62,12 +62,13 @@ webfetch.py ./output_webfetch ./chromedriver.exe 192.168.178.200 0 15 && decode.
 Info: There is currently a bug with the amount of times there are saved. Gets fixed when UI functionality gets implemented
 Json schema of the output file:
 <details>
-<summary>show 'code'</summary>
+<summary>show JSON</summary>
 <p>
 
 
 
-```{
+```json
+{
   "type": "object",
   "required": [],
   "properties": {
