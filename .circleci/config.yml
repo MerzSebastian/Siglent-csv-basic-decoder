@@ -30,13 +30,8 @@ jobs:
           command: |
             cd src
             pyinstaller decode.py --onefile
-            ls -la
-            cd dist
-            ls -la
-            cd decode
-            ls -la
       - store_artifacts:
-          path: /dist/decode/decode.exe
+          path: /root/project/src/dist/decode/decode.exe
 
   publish-github-release:
     docker:
