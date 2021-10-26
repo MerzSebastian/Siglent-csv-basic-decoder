@@ -141,7 +141,7 @@ def main():
 
     print("# # # # # # # # # # # # # # # # # # # # # #")
     print("Writing output file...")
-    path = write_output(sys.argv[2], result)
+    path = write_output(sys.argv[2] if len(sys.argv) > 2 else "./", result)
     print("Written file:", path)
     time_overall()
     print("# # # # # # # # # # # # # # # # # # # # # #")
