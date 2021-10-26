@@ -28,7 +28,7 @@ jobs:
             cd src
             python pyinstaller decode.py --onefile
       - store_artifacts:
-          paths: /src/dist
+          path: /src/dist
 
   publish-github-release:
     docker:
