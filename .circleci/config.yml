@@ -19,17 +19,16 @@ jobs:
 
   build-windows-exe:
     docker:
-       - image: cimg/python:3.8
-      steps:
-        - checkout
-        - run:
-            name: Create windows executable
-            command: |
-              cd src
-              python pyinstaller decode.py --onefile
-        - store_artifacts:
-            paths: /src/dist
-
+      - image: cimg/python:3.8
+    steps:
+      - checkout
+      - run:
+          name: Create windows executable
+          command: |
+            cd src
+             python pyinstaller decode.py --onefile
+      - store_artifacts:
+          paths: /src/dist
 
   publish-github-release:
     docker:
