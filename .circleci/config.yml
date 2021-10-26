@@ -45,7 +45,7 @@ jobs:
           name: Publish executable on GitHub
           command: |
             ls -la
-            cd src
+            cd src/dist/
             ls -la
             go get github.com/tcnksm/ghr
             VERSION=$(my-binary --version)
