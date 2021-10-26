@@ -49,7 +49,7 @@ jobs:
             ls -la
             go get github.com/tcnksm/ghr
             VERSION=$(my-binary --version)
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./src/dist/decode/
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete "1.0.0" ./src/dist/decode/
 
 workflows:
   decoder:
