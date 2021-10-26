@@ -26,6 +26,7 @@ jobs:
           name: Create windows executable
           command: |
             cd src
+            pip install pyinstaller
             pyinstaller decode.py --onefile
       - store_artifacts:
           path: /src/dist
