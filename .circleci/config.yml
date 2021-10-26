@@ -1,16 +1,14 @@
 version: 2.1
 
-orbs:
-  python: circleci/python@1.2
-
 jobs:
   test:
     docker:
       - image: cimg/python:3.8
     steps:
       - checkout
-      - python/install-packages:
-          pkg-manager: pip
+      - run:
+          name: Install depenencies
+          command: pip install -r requirements.txt
       - run:
           name: Run tests
           command: |
@@ -19,16 +17,15 @@ jobs:
 
   build-windows-exe:
     docker:
-      - image: cimg/python:3.8
+      - image: ubuntu:latest
     steps:
       - checkout
-      - python/install-packages:
-          pkg-manager: pip
       - run:
           name: Install depenencies
           command: |
+            sudo apt install python3.8
+            pip install -r requirements.txt
             pip install pyinstaller
-            sudo apt-get install python python3
       - run:
           name: Compile windows executable
           command: |
