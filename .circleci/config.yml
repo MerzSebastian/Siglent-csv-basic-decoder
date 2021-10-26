@@ -31,7 +31,9 @@ jobs:
             cd src
             pyinstaller decode.py --onefile
             ls -la
-            cd dist/decode
+            cd dist
+            ls -la
+            cd decode
             ls -la
       - store_artifacts:
           path: /dist/decode/decode.exe
