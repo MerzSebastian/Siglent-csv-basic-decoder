@@ -4,7 +4,8 @@ orbs:
   python: circleci/python@1.2
 
 jobs:
-  build-and-test:
+
+  test:
     docker:
       - image: cimg/python:3.8
     steps:
@@ -17,7 +18,38 @@ jobs:
             cd test
             python test.py
 
+  build-windows-exe:
+    docker:
+      - image: cimg/python:3.8
+      steps:
+        - checkout
+        - run:
+            name: Create windows executable
+            command: |
+              cd src
+              python pyinstaller decode.py --onefile
+        - store_artifacts:
+            paths: /src/dist
+
+
+  publish-github-release:
+    docker:
+      - image: circleci/golang:1.8
+    steps:
+      - attach_workspace:
+          at: ./artifacts
+      - run:
+          name: Publish executable on GitHub
+          command: |
+            go get github.com/tcnksm/ghr
+            VERSION=$(my-binary --version)
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
+
 workflows:
-  decoder-test:
+  decoder:
     jobs:
-      - build-and-test
+      - test
+        - build-windows-exe
+        - publish-github-release:
+          requires:
+            - build-windows-exe

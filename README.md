@@ -1,9 +1,7 @@
 
-# Digital data decoder for Siglent Oscilloscopes
+# SigToDig - Siglent Analog to Digital
 
-This is a little script for converting digital data which you captured with you're Siglent oscilloscope (CSV data) into binary format
-
-
+This is a little script for converting analog data which you captured with you're Siglent oscilloscope (CSV data) into binary format
 
 ## Install
 ```bash
@@ -22,14 +20,14 @@ decode.py <input_file_or_folder> <output_folder>
 
 #### Automated downloading from Web-UI
 ```bash
-webfetch.py <output_folder> <path_to_chromedriver> <web_ui_ip_address> <repititions> <pause_between_downloads_in_seconds>
+webfetch.py <output_folder> <path_to_chromedriver> <web_ui_ip_address> <repetitions> <pause_between_downloads_in_seconds>
 ```
 | Parameter  | Description |
 | ------------- | ------------- |
 | output_folder | Folder in which the downloaded binary file/s is/are saved |
-| path_to_chromedriver | Path to fitting chromedriver executable |
+| path_to_chromedriver | Path to chromedriver executable |
 | web_ui_ip_address | IP of Web-UI |
-| repititions | Number of downloads (default: 1) |
+| repetitions | Number of downloads (default: 1) |
 | pause_between_downloads_in_seconds | Pause between each download (default: 0) |
 
 ## Examples
@@ -37,6 +35,12 @@ webfetch.py <output_folder> <path_to_chromedriver> <web_ui_ip_address> <repititi
 Decoding analog data
 ```bash
 decode.py ./bin_files ./output
+```
+Sample console output <br/>
+![ ](/documentation/output.png)
+Sample JSON output <br/>
+```json
+
 ```
 
 #### Simple automated download
@@ -64,8 +68,6 @@ Json schema of the output file:
 <details>
 <summary>show JSON</summary>
 <p>
-
-
 
 ```json
 {
