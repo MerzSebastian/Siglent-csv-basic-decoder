@@ -22,11 +22,15 @@ jobs:
       - image: cimg/python:3.8
     steps:
       - checkout
+      - python/install-packages:
+          pkg-manager: pip
       - run:
-          name: Create windows executable
+          name: Install pyinstaller
+          command: pip install pyinstaller
+      - run:
+          name: Compile windows executable
           command: |
             cd src
-            pip install pyinstaller
             pyinstaller decode.py --onefile
       - store_artifacts:
           path: /src/dist
