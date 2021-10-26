@@ -25,6 +25,8 @@ jobs:
           command: |
             pip install -r requirements.txt
             pip install pyinstaller
+            cd ./root/project/src/dist/decode/
+            ls -la
       - run:
           name: Compile windows executable
           command: |
