@@ -45,11 +45,11 @@ jobs:
           name: Publish executable on GitHub
           command: |
             ls -la
-            cd decode
+            cd src/decode
             ls -la
             go get github.com/tcnksm/ghr
             VERSION=$(my-binary --version)
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./
 
 workflows:
   decoder:
