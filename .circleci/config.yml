@@ -4,7 +4,6 @@ orbs:
   python: circleci/python@1.2
 
 jobs:
-
   test:
     docker:
       - image: cimg/python:3.8
