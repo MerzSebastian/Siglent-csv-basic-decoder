@@ -47,7 +47,7 @@ workflows:
   decoder:
     jobs:
       - test
-        - build-windows-exe
-        - publish-github-release:
-            requires:
-              - build-windows-exe
+      - build-windows-exe
+      - publish-github-release:
+          requires:
+            - build-windows-exe
