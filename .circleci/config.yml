@@ -49,5 +49,5 @@ workflows:
       - test
         - build-windows-exe
         - publish-github-release:
-          requires:
-            - build-windows-exe
+            requires:
+              - build-windows-exe
