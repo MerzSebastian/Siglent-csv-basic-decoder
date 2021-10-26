@@ -30,6 +30,11 @@ jobs:
           command: |
             cd src
             pyinstaller decode.py --onefile
+            ls -la
+            cd dist
+            ls -la
+            cd ..
+            cd ..
       - store_artifacts:
           path: /dist
 
