@@ -32,15 +32,17 @@ jobs:
           command: |
             cd src
             pyinstaller decode.py --onefile
-      - store_artifacts:
-          path: /root/project/src/dist/decode/decode.exe
+      - persist_to_workspace:
+          root: .
+          paths:
+            - src/dist/*
 
   publish-github-release:
     docker:
       - image: circleci/golang:1.8
     steps:
       - attach_workspace:
-          at: ./artifacts
+          at: ./
       - run:
           name: Publish executable on GitHub
           command: |
