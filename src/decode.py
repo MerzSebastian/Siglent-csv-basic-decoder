@@ -40,8 +40,6 @@ def reformat_raw_data(data):
 def remove_redundant_data_points(x, y):
     #x = [([x[i], x[i]]) for i in range(1, len(x) - 1) if (y[i - 1] != y[i]) and (y[i + 1] == y[i])]
     #y = [([1 - y[i], y[i]]) for i in range(1, len(x) - 1) if (y[i - 1] != y[i]) and (y[i + 1] == y[i])]
-
-    # THROW ERROR IF length of < and x are not the same
     xx = []
     yy = []
     for i in range(1, len(x) - 1):
