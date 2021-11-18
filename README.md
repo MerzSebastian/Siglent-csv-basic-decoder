@@ -1,4 +1,4 @@
-
+[![CircleCI](https://circleci.com/gh/MerzSebastian/Siglent-csv-basic-decoder.svg?style=svg)](https://circleci.com/gh/MerzSebastian/Siglent-csv-basic-decoder)
 # SigToDig - Siglent Analog to Digital
 
 This is a little script for converting analog data which you captured with you're Siglent oscilloscope (CSV data) into binary format
