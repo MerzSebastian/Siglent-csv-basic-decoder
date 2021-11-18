@@ -27,9 +27,28 @@ jobs:
           command: |
             cd src
             pyinstaller decode.py --onefile
+  test:
+    executor:
+      name: win/default
+      shell: powershell.exe
+    steps:
+      - checkout
+      - run: systeminfo
+      - run:
+          name: "Install requirements"
+          shell: powershell.exe
+          command: |
+            pip install -r requirements.txt
+      - run:
+          name: "Install requirements"
+          shell: powershell.exe
+          command: |
+            cd test
+            python test.py
 
 workflows:
   decoder:
     jobs:
       - build
+      - test
 
