@@ -27,8 +27,6 @@ jobs:
           command: |
             cd src
             pyinstaller decode.py --onefile
-            cd dist
-            dir
       - run:
           name: "install github cli"
           shell: powershell.exe
@@ -36,7 +34,7 @@ jobs:
       - run:
           name: "github create release"
           shell: powershell.exe
-          command: gh release create v1.0.1 ./dist/decode.exe
+          command: gh release create v1.0.1 /dist/decode.exe
 
   test:
     executor:
