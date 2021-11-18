@@ -40,11 +40,9 @@ jobs:
           command: |
             pip install -r requirements.txt
       - run:
-          name: "Install requirements"
+          name: "Testing decode"
           shell: powershell.exe
-          command: |
-            cd test
-            python test.py
+          command: python /test/test.py
 
 workflows:
   decoder:
