@@ -28,7 +28,7 @@ jobs:
             cd src
             pyinstaller decode.py --onefile
       - persist_to_workspace:
-          root ./
+          root: ./
           paths:
             - src/dist/
 
