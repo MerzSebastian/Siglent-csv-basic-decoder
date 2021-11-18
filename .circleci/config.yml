@@ -22,11 +22,21 @@ jobs:
           shell: powershell.exe
           command: pip install pyinstaller
       - run:
-          name: Compile windows executable
+          name: "Compile windows executable"
           shell: powershell.exe
           command: |
             cd src
             pyinstaller decode.py --onefile
+            dir
+      - run:
+          name: "install github cli"
+          shell: powershell.exe
+          command: choco install gh
+      - run:
+          name: "github create release"
+          shell: powershell.exe
+          command: gh release create v1.0.1 ./decode.exe
+
   test:
     executor:
       name: win/default
