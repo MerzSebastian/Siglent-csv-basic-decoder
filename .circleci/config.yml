@@ -78,6 +78,6 @@ workflows:
             - tests
           filters:
             branches:
-              only: /^feature.*$/
+              only: /^release.*$/
       - tests
 
