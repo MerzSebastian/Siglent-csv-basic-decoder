@@ -1,57 +1,35 @@
 version: 2.1
 
-jobs:
-  test:
-    docker:
-      - image: cimg/python:3.8
-    steps:
-      - checkout
-      - run:
-          name: Install depenencies
-          command: pip install -r requirements.txt
-      - run:
-          name: Run tests
-          command: |
-            cd test
-            python test.py
+orbs:
+  win: circleci/windows@2.2.0
 
-  build-windows-exe:
-    docker:
-      - image: python:3.9
+jobs:
+  build:
+    executor:
+      name: win/default
+      shell: powershell.exe
     steps:
       - checkout
+      - run: systeminfo
       - run:
-          name: Install depenencies
+          name: "Install requirements"
+          shell: powershell.exe
           command: |
             pip install -r requirements.txt
             pip install pyinstaller
       - run:
+          name: "Run tests"
+          shell: powershell.exe
+          command: pip install pyinstaller
+      - run:
           name: Compile windows executable
+          shell: powershell.exe
           command: |
             cd src
             pyinstaller decode.py --onefile
-      - persist_to_workspace:
-          root: .
-          paths:
-            - src/dist/*
-
-  publish-github-release:
-    docker:
-      - image: circleci/golang:1.10
-    steps:
-      - attach_workspace:
-          at: ./
-      - run:
-          name: Publish executable on GitHub
-          command: |
-            go get github.com/tcnksm/ghr
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete "1.0.0" ./src/dist/
 
 workflows:
   decoder:
     jobs:
-      - test
-      - build-windows-exe
-      - publish-github-release:
-          requires:
-            - build-windows-exe
+      - build
+

@@ -1,6 +1,6 @@
 # Author: Sebastian Merz
 # Licence: GNU General Public License v3.0
-# Description: Script for testing the decode.py script and making sure that it doesnt break
+# Description: Script for testing the decoding and making sure that it doesnt break
 # Example: test.py
 
 import os
@@ -32,7 +32,7 @@ print("TEST: input path", inputPath)
 print("TEST: output path", outputPath)
 print("TEST: start command", startCommand)
 
-os.system(startCommand)
+os.system("python " + startCommand)
 
 files = glob.glob(os.path.join(outputPath, '*json'))
 if not files:
