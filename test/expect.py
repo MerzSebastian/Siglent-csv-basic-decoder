@@ -8,8 +8,10 @@
 #   Expect([1,2,3]).to_include(2, "Test3")
 #   Expect([1,2,3]).to_include_not(5, "Test4")
 
+from colorama import init, Fore, Back, Style
+init()
 
-class Expect:
+class expect:
     value = ''
 
     def __init__(self, value):
@@ -24,10 +26,10 @@ class Expect:
     def __to_be(self, value, description, positive):
         status = (value == self.value) if positive else (value != self.value)
         if status:
-            print(description, 'SUCCESS!')
+            print(f'{ Fore.BLACK }{ Back.BLUE }TEST: { Back.GREEN }SUCCESS!: { description }{ Style.RESET_ALL }')
             return True
         else:
-            print(description, f'FAILED! Expected { self.value } to{ "" if positive else " not"} be { value }')
+            print(f'{ Fore.BLACK }{ Back.BLUE }TEST: { Back.RED }FAILED!: { description }: Expected { self.value } to{ "" if positive else " not"} be { value }{ Style.RESET_ALL }')
             return False
 
     def to_include(self, value, description):
@@ -39,8 +41,8 @@ class Expect:
     def __to_include(self, value, description, positive):
         status = (value in self.value) if positive else (value not in self.value)
         if status:
-            print(description, 'SUCCESS!')
+            print(f'{Fore.BLACK}{Back.BLUE}TEST: {Back.GREEN}SUCCESS!: {description}{Style.RESET_ALL}')
             return True
         else:
-            print(description, f'FAILED! Expected { self.value } to{ "" if positive else " not"} include {value}')
+            print(f'{Fore.BLACK}{Back.BLUE}TEST: {Back.RED}FAILED!: {description}: Expected {self.value} to{"" if positive else " not"} include {value}{Style.RESET_ALL}')
             return False

@@ -1,0 +1,83 @@
+version: 2.1
+
+orbs:
+  win: circleci/windows@2.2.0
+
+jobs:
+  build:
+    executor:
+      name: win/default
+      shell: powershell.exe
+    steps:
+      - checkout
+      - run: systeminfo
+      - run:
+          name: "Install requirements"
+          shell: powershell.exe
+          command: |
+            pip install -r requirements.txt
+            pip install pyinstaller
+      - run:
+          name: "Run tests"
+          shell: powershell.exe
+          command: pip install pyinstaller
+      - run:
+          name: "Compile windows executable"
+          shell: powershell.exe
+          command: |
+            cd src
+            pyinstaller decode.py --onefile
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - src/dist/
+
+  publish:
+    executor:
+      name: win/default
+      shell: powershell.exe
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./
+      - run:
+          name: "install github cli"
+          shell: powershell.exe
+          command: choco install gh
+      - run:
+          name: "github create release"
+          shell: powershell.exe
+          command: gh release create $Env:CIRCLE_BRANCH.split("/")[1] C:\Users\circleci\project\src\dist\decode.exe
+
+  tests:
+    executor:
+      name: win/default
+      shell: powershell.exe
+    steps:
+      - checkout
+      - run: systeminfo
+      - run:
+          name: "Install requirements"
+          shell: powershell.exe
+          command: |
+            pip install -r requirements.txt
+      - run:
+          name: "Testing decode"
+          shell: powershell.exe
+          command: |
+            cd C:\Users\circleci\project\test
+            python test.py
+
+workflows:
+  decoder:
+    jobs:
+      - build
+      - publish:
+          requires:
+            - build
+            - tests
+          filters:
+            branches:
+              only: /^release.*$/
+      - tests
+
