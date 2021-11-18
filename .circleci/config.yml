@@ -47,9 +47,7 @@ jobs:
       - run:
           name: "github create release"
           shell: powershell.exe
-          command: |
-            $Env:CIRCLE_BRANCH
-            gh release create v1.0.1 C:\Users\circleci\project\src\dist\decode.exe
+          command: gh release create $Env:CIRCLE_BRANCH.split("/")[1] C:\Users\circleci\project\src\dist\decode.exe
 
   tests:
     executor:
