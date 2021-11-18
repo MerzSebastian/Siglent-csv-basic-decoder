@@ -37,6 +37,7 @@ jobs:
       name: win/default
       shell: powershell.exe
     steps:
+      - checkout
       - attach_workspace:
           at: ./
       - run:
