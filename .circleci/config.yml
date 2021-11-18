@@ -27,6 +27,18 @@ jobs:
           command: |
             cd src
             pyinstaller decode.py --onefile
+      - persist_to_workspace:
+          root ./
+          paths:
+            - src/dist/
+
+  publish:
+    executor:
+      name: win/default
+      shell: powershell.exe
+    steps:
+      - attach_workspace:
+          at: ./
       - run:
           name: "install github cli"
           shell: powershell.exe
@@ -57,5 +69,11 @@ workflows:
   decoder:
     jobs:
       - build
+      - publish:
+          requires:
+            - build
+          filters:
+            branches:
+              only: /^feature.*$/
       - test
 
