@@ -34,7 +34,7 @@ jobs:
       - run:
           name: "github create release"
           shell: powershell.exe
-          command: gh release create v1.0.1 /dist/decode.exe
+          command: gh release create v1.0.1 /src/dist/decode.exe
 
   test:
     executor:
