@@ -13,7 +13,7 @@ basePath = os.path.dirname(pathlib.Path().resolve())
 mainPath = os.path.join(basePath, 'src\decode.py')
 inputPath = os.path.join(basePath, 'test\samples')
 outputPath = os.path.join(basePath, 'test\output')
-startCommand = ' '.join([mainPath, inputPath, outputPath])
+startCommand = ' '.join([mainPath, "-i=" + inputPath, "-o=" + outputPath])
 
 webfetchMainPath = os.path.join(basePath, 'src\webfetch.py')
 webfetchOutputPath = os.path.join(basePath, 'test\webfetch_output')

@@ -4,7 +4,6 @@
 # Parameter: decode.py <input_file_or_folder> <output_folder>
 # Example: decode.py ../test/samples ./
 
-import sys
 import time
 import os as os
 from bin import bin
@@ -12,6 +11,7 @@ import ui
 from datetime import datetime
 import json
 import statistics
+import argparse
 
 start_time = 0
 last_time = 0
@@ -131,11 +131,23 @@ def calculate(file):
     }
 
 
+def getArguments():
+    parser = argparse.ArgumentParser(description='Decoding NRZ-L-Code from Siglents binary file format into json. If you want to automatically download multiple shots over the Web-UI you have to fill the -d and -u parameters.')
+    parser.add_argument('-i', '--input', action='store', help='Binary input file/folder (example: ./myfile.bin)', required=True)
+    parser.add_argument('-o', '--output', action='store', help='Output folder for json result (default: ./ | example: ./output)')
+    parser.add_argument('-g', '--graph', action='store_true', help='Show graph after decoding (info: Only works when decoding a single file)')
+    # Additional parameter for webfetch, only use of driver and ui are defined
+    parser.add_argument('-d', '--driver', action='store', help='Path to Chromedriver/Geckodriver (example: ./chromedriver.exe)')
+    parser.add_argument('-u', '--url', action='store', help='URL to Siglents Web-UI (example: 192.168.178.123/dsadasdad)')
+    parser.add_argument('-r', '--repetitions', action='store', help='Number of downloads (default: 1)')
+    parser.add_argument('-p', '--pause', action='store', help='Pause between each download in seconds (default: 0)')
+    return parser.parse_args()
+
 
 def main():
     time_start()
-
-    file_paths = ([os.path.join(sys.argv[1], f) for f in os.listdir(sys.argv[1]) if f.endswith('.bin')] if os.path.isdir(sys.argv[1]) else [sys.argv[1]])
+    args = getArguments()
+    file_paths = ([os.path.join(args.input, f) for f in os.listdir(args.input) if f.endswith('.bin')] if os.path.isdir(args.input) else [args.input])
 
     result = {}
     for file in file_paths:
@@ -143,11 +155,11 @@ def main():
 
     print("# # # # # # # # # # # # # # # # # # # # # #")
     print("Writing output file...")
-    path = write_output(sys.argv[2] if len(sys.argv) > 2 else "./", result)
+    path = write_output(args.output if args.output else "./", result)
     print("Written file:", path)
     time_overall()
     print("# # # # # # # # # # # # # # # # # # # # # #")
-    if len(file_paths) is 1:
+    if len(file_paths) is 1 and args.graph:
         ui.showTwoGraphs(ui_raw_data, ui_cleaned_data)
 
 if __name__ == "__main__":
