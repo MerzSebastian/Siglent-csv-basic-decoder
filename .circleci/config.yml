@@ -43,6 +43,12 @@ jobs:
             dir
             cd C:/Python27/Lib/
             dir
+      - run:
+          name: "test"
+          shell: powershell.exe
+          command: |
+            cd C:/Users/circleci/AppData/Local/Programs/
+            dir
 
   publish:
     executor:
