@@ -12,9 +12,11 @@ jobs:
       - checkout
       - run: systeminfo
       - run:
-          name: "Install requirements"
+          name: "Upgrade pip & Install requirements"
           shell: powershell.exe
-          command: pip install -r requirements.txt
+          command: |
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
       - run:
           name: "Compile windows executable"
           shell: powershell.exe
@@ -41,7 +43,7 @@ jobs:
       - run:
           name: "github create release"
           shell: powershell.exe
-          command: gh release create $Env:CIRCLE_BRANCH.split("/")[1] C:\Users\circleci\project\src\dist\decode.exe
+          command: gh release create $Env:CIRCLE_BRANCH.split("/")[1] src\dist\decode.exe
 
   test-native:
     executor:
@@ -55,9 +57,11 @@ jobs:
           shell: powershell.exe
           command: python -m pip install --upgrade pip
       - run:
-          name: "Install requirements"
+          name: "Upgrade pip & Install requirements"
           shell: powershell.exe
-          command: pip install -r requirements.txt
+          command: |
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
       - run:
           name: "Testing decode"
           shell: powershell.exe
