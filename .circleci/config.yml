@@ -43,10 +43,6 @@ jobs:
             dir
             cd C:/Python27/
             dir
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - C:/Python27amd64/Lib/
 
   publish:
     executor:
