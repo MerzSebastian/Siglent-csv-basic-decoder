@@ -65,7 +65,7 @@ jobs:
           shell: powershell.exe
           command: |
             cd test
-            python test.py
+            test.py
 
   test-windows:
     executor:
@@ -90,7 +90,7 @@ jobs:
           shell: powershell.exe
           command: |
             cd test
-            python test.py -s="..\src\dist\decode.exe"
+            test.py -s="..\src\dist\decode.exe"
 
 workflows:
   decoder:
