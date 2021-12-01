@@ -14,13 +14,7 @@ jobs:
       - run:
           name: "Install requirements"
           shell: powershell.exe
-          command: |
-            pip install -r requirements.txt
-            pip install pyinstaller
-      - run:
-          name: "Run tests"
-          shell: powershell.exe
-          command: pip install pyinstaller
+          command: pip install -r requirements.txt
       - run:
           name: "Compile windows executable"
           shell: powershell.exe
@@ -49,7 +43,7 @@ jobs:
           shell: powershell.exe
           command: gh release create $Env:CIRCLE_BRANCH.split("/")[1] C:\Users\circleci\project\src\dist\decode.exe
 
-  tests:
+  test-native:
     executor:
       name: win/default
       shell: powershell.exe
@@ -68,19 +62,22 @@ jobs:
           name: "Testing decode"
           shell: powershell.exe
           command: |
-            cd C:\Users\circleci\project\test
+            cd test
             python test.py
 
 workflows:
   decoder:
     jobs:
       - build
+      - test-native
       - publish:
           requires:
             - build
-            - tests
+            - test-native
           filters:
             branches:
-              only: /^release.*$/
-      - tests
+              ignore: /.*/
+            tags:
+              only: /(?<=^[Vv]|^)(?:(?<major>(?:0|[1-9](?:(?:0|[1-9])+)*))[.](?<minor>(?:0|[1-9](?:(?:0|[1-9])+)*))[.](?<patch>(?:0|[1-9](?:(?:0|[1-9])+)*))(?:-(?<prerelease>(?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:0|[1-9](?:(?:0|[1-9])+)*))(?:[.](?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:0|[1-9](?:(?:0|[1-9])+)*)))*))?(?:[+](?<build>(?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:(?:0|[1-9])+))(?:[.](?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:(?:0|[1-9])+)))*))?)$/
+
 
