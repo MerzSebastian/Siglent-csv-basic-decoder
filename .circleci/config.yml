@@ -41,10 +41,7 @@ jobs:
           command: |
             cd C:/
             dir
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - C:/Python/Lib/
+      
 
   publish:
     executor:
