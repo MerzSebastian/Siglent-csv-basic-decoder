@@ -57,10 +57,13 @@ jobs:
       - checkout
       - run: systeminfo
       - run:
+          name: "Update pip"
+          shell: powershell.exe
+          command: python -m pip install --upgrade pip
+      - run:
           name: "Install requirements"
           shell: powershell.exe
-          command: |
-            pip install -r requirements.txt
+          command: pip install -r requirements.txt
       - run:
           name: "Testing decode"
           shell: powershell.exe
