@@ -39,9 +39,9 @@ jobs:
           name: "test"
           shell: powershell.exe
           command: |
-            cd C:/Python27amd64/
+            cd C:/Python27amd64/Lib/
             dir
-            cd C:/Python27/
+            cd C:/Python27/Lib/
             dir
 
   publish:
