@@ -80,8 +80,6 @@ workflows:
             - test-native
           filters:
             branches:
-              ignore: /.*/
-            tags:
               only: /^release.*$/
 
 
