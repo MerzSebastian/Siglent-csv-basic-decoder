@@ -8,6 +8,7 @@ import sys
 import time
 import os as os
 from bin import bin
+import ui
 from datetime import datetime
 import json
 import statistics
@@ -36,7 +37,6 @@ def reformat_raw_data(data):
     y = [data[i][1] for i in range(len(data))]
     return x, y
 
-
 def remove_redundant_data_points(x, y):
     #x = [([x[i], x[i]]) for i in range(1, len(x) - 1) if (y[i - 1] != y[i]) and (y[i + 1] == y[i])]
     #y = [([1 - y[i], y[i]]) for i in range(1, len(x) - 1) if (y[i - 1] != y[i]) and (y[i + 1] == y[i])]
@@ -46,6 +46,8 @@ def remove_redundant_data_points(x, y):
         if y[i - 1] != y[i] and y[i + 1] == y[i]:
             xx.extend([x[i], x[i]])
             yy.extend([1 - y[i], y[i]])
+    global ui_cleaned_data
+    ui_cleaned_data = [xx, yy]
     return xx, yy
 
 
@@ -81,6 +83,8 @@ def calculate(file):
     print("Reading and converting binary data", file, "...")
     raw_data = bin(file).convert()[0] #doesnt work for multiple channels, have to test if channel 2, 3 and 4 works. only testet first i think
     x, y = reformat_raw_data(raw_data)
+    global ui_raw_data
+    ui_raw_data = [x, y]
     time_round()
 
     print("Calculating threshold...")
@@ -143,7 +147,8 @@ def main():
     print("Written file:", path)
     time_overall()
     print("# # # # # # # # # # # # # # # # # # # # # #")
-
+    if len(file_paths) is 1:
+        ui.showTwoGraphs(ui_raw_data, ui_cleaned_data)
 
 if __name__ == "__main__":
     main()
