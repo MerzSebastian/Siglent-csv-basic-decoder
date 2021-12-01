@@ -38,7 +38,8 @@ print("TEST: input path", inputPath)
 print("TEST: output path", outputPath)
 print("TEST: start command", startCommand)
 
-os.system("python " + startCommand)
+startCommand = "python " + startCommand if args.script else startCommand
+os.system(startCommand)
 
 files = glob.glob(os.path.join(outputPath, '*json'))
 if not files:
