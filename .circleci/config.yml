@@ -10,7 +10,6 @@ jobs:
       shell: powershell.exe
     steps:
       - checkout
-      - run: systeminfo
       - run:
           name: "Upgrade pip & Install requirements"
           shell: powershell.exe
@@ -51,7 +50,6 @@ jobs:
       shell: powershell.exe
     steps:
       - checkout
-      - run: systeminfo
       - run:
           name: "Update pip"
           shell: powershell.exe
@@ -69,15 +67,44 @@ jobs:
             cd test
             python test.py
 
+  test-windows:
+    executor:
+      name: win/default
+      shell: powershell.exe
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./
+      - run:
+          name: "Update pip"
+          shell: powershell.exe
+          command: python -m pip install --upgrade pip
+      - run:
+          name: "Upgrade pip & Install requirements"
+          shell: powershell.exe
+          command: |
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
+      - run:
+          name: "Testing decode"
+          shell: powershell.exe
+          command: |
+            cd test
+            python test.py -s="..\src\dist\decode.exe"
+
 workflows:
   decoder:
     jobs:
       - build
       - test-native
+      - test-windows:
+          requires:
+            - build
       - publish:
           requires:
             - build
             - test-native
+            - test-windows
           filters:
             branches:
               only: /^release.*$/

@@ -8,18 +8,24 @@ import glob
 from expect import expect
 import pathlib
 import json
+import argparse
+
+parser = argparse.ArgumentParser(description='Testing Script')
+parser.add_argument('-s', '--script', action='store', help='Alternative script path')
+args = parser.parse_args()
 
 basePath = os.path.dirname(pathlib.Path().resolve())
 mainPath = os.path.join(basePath, 'src\decode.py')
+mainPath = args.script if args.script else mainPath
 inputPath = os.path.join(basePath, 'test\samples')
 outputPath = os.path.join(basePath, 'test\output')
 startCommand = ' '.join([mainPath, "-i=" + inputPath, "-o=" + outputPath])
 
-webfetchMainPath = os.path.join(basePath, 'src\webfetch.py')
-webfetchOutputPath = os.path.join(basePath, 'test\webfetch_output')
-webfetchChromedriverPath = os.path.join(basePath, 'test\chromedriver.exe')
-webfetchUrl = "http://192.168.178.200/Instrument/novnc/vnc_auto.php#"
-startWebfetchCommand = ' '.join([webfetchMainPath, webfetchOutputPath, webfetchChromedriverPath, webfetchUrl])
+#webfetchMainPath = os.path.join(basePath, 'src\webfetch.py')
+#webfetchOutputPath = os.path.join(basePath, 'test\webfetch_output')
+#webfetchChromedriverPath = os.path.join(basePath, 'test\chromedriver.exe')
+#webfetchUrl = "http://192.168.178.200/Instrument/novnc/vnc_auto.php#"
+#startWebfetchCommand = ' '.join([webfetchMainPath, webfetchOutputPath, webfetchChromedriverPath, webfetchUrl])
 
 #print("TEST: Starting WEBFETCH test")
 #print(startWebfetchCommand)
