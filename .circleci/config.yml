@@ -51,10 +51,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "Update pip"
-          shell: powershell.exe
-          command: python -m pip install --upgrade pip
-      - run:
           name: "Upgrade pip & Install requirements"
           shell: powershell.exe
           command: |
