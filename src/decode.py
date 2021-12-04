@@ -17,6 +17,10 @@ import argparse
 start_time = 0
 last_time = 0
 
+logger = True
+def log(log):
+    if logger:
+        print(log)
 
 def calculate_error(current_pulse_length, single_pulse_length, pulse_count):
     return [(current_pulse_length % (pulse_count * single_pulse_length)) for _ in range(pulse_count)] #maybe calculating error outside of foreach is more efficient ? i dont know. should be fine
@@ -62,7 +66,7 @@ def write_output(path, data):
 
 def time_round():
     global last_time
-    print("Elapsed time:", round((time.perf_counter() - last_time)*1000), "ms")
+    log("Elapsed time: " + str(round((time.perf_counter() - last_time)*1000)) + "ms")
     last_time = time.perf_counter()
 
 
@@ -75,46 +79,46 @@ def time_start():
 
 def time_overall():
     global start_time
-    print("Overall elapsed time:", round((time.perf_counter() - start_time) * 1000), "ms")
+    log("Overall elapsed time: " + str(round((time.perf_counter() - start_time) * 1000)) + "ms")
 
 
 def calculate(file):
-    print("# # # # # # # # # # # # # # # # # # # # # #")
-    print("Reading and converting binary data", file, "...")
+    log("# # # # # # # # # # # # # # # # # # # # # #")
+    log("Reading and converting binary data " + file + "...")
     raw_data = bin(file).convert()[0] #doesnt work for multiple channels, have to test if channel 2, 3 and 4 works. only testet first i think
     x, y = reformat_raw_data(raw_data)
     global ui_raw_data
     ui_raw_data = [x, y]
     time_round()
 
-    print("Calculating threshold...")
+    log("Calculating threshold...")
     threshold = max(y) / 2
-    print("Threshold:", threshold, "Volt")
+    log("Threshold: " + str(threshold) + "Volt")
     time_round()
 
-    print("Correct time offset...")
+    log("Correct time offset...")
     y = [(True if i > threshold else False) for i in y]
     time_round()
 
-    print("Removing doubled data points...")
+    log("Removing doubled data points...")
     x, y = remove_redundant_data_points(x, y)
     time_round()
 
-    print("Shifting time value so it starts at 0...")
+    log("Shifting time value so it starts at 0...")
     x = [x[i] - min(x) for i in range(len(x))]
     time_round()
     global ui_cleaned_data
     ui_cleaned_data = [x, y]
 
-    print("Getting shortest pulse length...")
+    log("Getting shortest pulse length...")
     single_pulse_length = min([abs(x[i] - x[i + 2]) for i in range(len(y) - 2)])
-    print("Shortest pulse length:", format(single_pulse_length, '.12f'))
+    log("Shortest pulse length: " + format(single_pulse_length, '.12f'))
     time_round()
 
-    print("Decoding data...")
+    log("Decoding data...")
     decoded_data, error = decode_normalized_data(x, y, single_pulse_length)
     decoded_string_data = ''.join(str(val) for val in decoded_data)
-    print("Decoded data:", decoded_string_data)
+    log("Decoded data: " + decoded_string_data)
     time_round()
 
     return {
@@ -160,12 +164,12 @@ def main():
     for file in file_paths:
         result[os.path.basename(file)] = calculate(file)
 
-    print("# # # # # # # # # # # # # # # # # # # # # #")
-    print("Writing output file...")
+    log("# # # # # # # # # # # # # # # # # # # # # #")
+    log("Writing output file...")
     path = write_output(args.output if args.output else "./", result)
-    print("Written file:", path)
+    log("Written file: " + path)
     time_overall()
-    print("# # # # # # # # # # # # # # # # # # # # # #")
+    log("# # # # # # # # # # # # # # # # # # # # # #")
     if len(file_paths) is 1 and args.graph:
         ui.showTwoGraphs(ui_raw_data, ui_cleaned_data)
 
