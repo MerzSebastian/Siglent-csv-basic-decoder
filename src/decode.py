@@ -7,6 +7,7 @@
 import time
 import os as os
 from bin import bin
+from webfetch import webfetch
 import ui
 from datetime import datetime
 import json
@@ -37,6 +38,7 @@ def reformat_raw_data(data):
     y = [data[i][1] for i in range(len(data))]
     return x, y
 
+
 def remove_redundant_data_points(x, y):
     #x = [([x[i], x[i]]) for i in range(1, len(x) - 1) if (y[i - 1] != y[i]) and (y[i + 1] == y[i])]
     #y = [([1 - y[i], y[i]]) for i in range(1, len(x) - 1) if (y[i - 1] != y[i]) and (y[i + 1] == y[i])]
@@ -46,8 +48,6 @@ def remove_redundant_data_points(x, y):
         if y[i - 1] != y[i] and y[i + 1] == y[i]:
             xx.extend([x[i], x[i]])
             yy.extend([1 - y[i], y[i]])
-    global ui_cleaned_data
-    ui_cleaned_data = [xx, yy]
     return xx, yy
 
 
@@ -103,6 +103,8 @@ def calculate(file):
     print("Shifting time value so it starts at 0...")
     x = [x[i] - min(x) for i in range(len(x))]
     time_round()
+    global ui_cleaned_data
+    ui_cleaned_data = [x, y]
 
     print("Getting shortest pulse length...")
     single_pulse_length = min([abs(x[i] - x[i + 2]) for i in range(len(y) - 2)])
@@ -133,7 +135,7 @@ def calculate(file):
 
 def getArguments():
     parser = argparse.ArgumentParser(description='Decoding NRZ-L-Code from Siglents binary file format into json. If you want to automatically download multiple shots over the Web-UI you have to fill the -d and -u parameters.')
-    parser.add_argument('-i', '--input', action='store', help='Binary input file/folder (example: ./myfile.bin)', required=True)
+    parser.add_argument('-i', '--input', action='store', help='Binary input file/folder (example: ./myfile.bin | Info: Define a empty folder for temp files if using webfetch downloading)', required=True)
     parser.add_argument('-o', '--output', action='store', help='Output folder for json result (default: ./ | example: ./output)')
     parser.add_argument('-g', '--graph', action='store_true', help='Show graph after decoding (info: Only works when decoding a single file)')
     # Additional parameter for webfetch, only use of driver and ui are defined
@@ -147,8 +149,13 @@ def getArguments():
 def main():
     time_start()
     args = getArguments()
-    file_paths = ([os.path.join(args.input, f) for f in os.listdir(args.input) if f.endswith('.bin')] if os.path.isdir(args.input) else [args.input])
 
+    #Check if file are provided by webfetch
+    if args.driver and args.url:
+        webfetch(args.input, args.driver, args.url, args.repetitions, args.pause) # maybe return downloaded files, should be better so old files doesnt get decoded again
+
+    #Get all files
+    file_paths = ([os.path.join(args.input, f) for f in os.listdir(args.input) if f.endswith('.bin')] if os.path.isdir(args.input) else [args.input])
     result = {}
     for file in file_paths:
         result[os.path.basename(file)] = calculate(file)
@@ -161,6 +168,7 @@ def main():
     print("# # # # # # # # # # # # # # # # # # # # # #")
     if len(file_paths) is 1 and args.graph:
         ui.showTwoGraphs(ui_raw_data, ui_cleaned_data)
+
 
 if __name__ == "__main__":
     main()
