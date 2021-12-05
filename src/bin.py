@@ -11,8 +11,9 @@ class bin:
     magnitudes = [10e-24, 10e-21, 10e-18, 10e-15, 10e-12, 10e-9, 10e-6, 10e-3, 1, 10e3, 10e6, 10e9, 10e12, 10e15]
     file = ''
 
-    def __init__(self, file):
+    def __init__(self, file, logger):
         self.file = file
+        self.logger = logger
 
     def data_to_unit(self, data):
         result = []
@@ -46,15 +47,15 @@ class bin:
         data = file_data[2048:]
         f.close()
 
-        print('channel_states: ', channel_states)
-        print('channel_volt_division: ', channel_volt_division)
-        print('channel_offset: ', channel_offset)
-        #print('digital_states: ', digital_states)
-        print('horizontal_list: ', horizontal_list)
-        print('wave_length: ', wave_length)
-        print('sample_rate: ', sample_rate)
-        #print('digital_wave_length: ', digital_wave_length)
-        #print('digital_sample_rate: ', digital_sample_rate)
+        self.logger.log('channel_states: ' + str(channel_states))
+        self.logger.log('channel_volt_division: ' + str(channel_volt_division))
+        self.logger.log('channel_offset: ' + str(channel_offset))
+        #self.logger.log('digital_states: ' + str(digital_states))
+        self.logger.log('horizontal_list: ' + str(horizontal_list))
+        self.logger.log('wave_length: ' + str(wave_length))
+        self.logger.log('sample_rate: ' + str(sample_rate))
+        #print('digital_wave_length: ' + str(digital_wave_length))
+        #print('digital_sample_rate: ' + str(digital_sample_rate))
 
         block_length = (1000000 if len(data) >= 14e6 or wave_length >= 1E6 else wave_length)
         block_number = int(wave_length // block_length)

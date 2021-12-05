@@ -4,6 +4,7 @@
 # Parameter: decode.py <input_file_or_folder> <output_folder>
 # Example: decode.py ../test/samples ./
 
+from multiprocessing import Process, Manager
 import time
 import os as os
 from bin import bin
@@ -13,14 +14,12 @@ from datetime import datetime
 import json
 import statistics
 import argparse
+from logger import Logger
 
 start_time = 0
 last_time = 0
+logger = Logger()
 
-logger = True
-def log(log):
-    if logger:
-        print(log)
 
 def calculate_error(current_pulse_length, single_pulse_length, pulse_count):
     return [(current_pulse_length % (pulse_count * single_pulse_length)) for _ in range(pulse_count)] #maybe calculating error outside of foreach is more efficient ? i dont know. should be fine
@@ -64,9 +63,9 @@ def write_output(path, data):
     return name
 
 
-def time_round():
+def time_round(logger):
     global last_time
-    log("Elapsed time: " + str(round((time.perf_counter() - last_time)*1000)) + "ms")
+    logger.log("Elapsed time: " + str(round((time.perf_counter() - last_time)*1000)) + "ms")
     last_time = time.perf_counter()
 
 
@@ -79,47 +78,47 @@ def time_start():
 
 def time_overall():
     global start_time
-    log("Overall elapsed time: " + str(round((time.perf_counter() - start_time) * 1000)) + "ms")
+    print("Overall elapsed time: " + str(round((time.perf_counter() - start_time) * 1000)) + "ms")
 
 
-def calculate(file):
-    log("# # # # # # # # # # # # # # # # # # # # # #")
-    log("Reading and converting binary data " + file + "...")
-    raw_data = bin(file).convert()[0] #doesnt work for multiple channels, have to test if channel 2, 3 and 4 works. only testet first i think
+def calculate(file, logger):
+    logger.log("# # # # # # # # # # # # # # # # # # # # # #")
+    logger.log("Reading and converting binary data " + file + "...")
+    raw_data = bin(file, logger).convert()[0] #doesnt work for multiple channels, have to test if channel 2, 3 and 4 works. only testet first i think
     x, y = reformat_raw_data(raw_data)
     global ui_raw_data
     ui_raw_data = [x, y]
-    time_round()
+    time_round(logger)
 
-    log("Calculating threshold...")
+    logger.log("Calculating threshold...")
     threshold = max(y) / 2
-    log("Threshold: " + str(threshold) + "Volt")
-    time_round()
+    logger.log("Threshold: " + str(threshold) + "Volt")
+    time_round(logger)
 
-    log("Correct time offset...")
+    logger.log("Correct time offset...")
     y = [(True if i > threshold else False) for i in y]
-    time_round()
+    time_round(logger)
 
-    log("Removing doubled data points...")
+    logger.log("Removing doubled data points...")
     x, y = remove_redundant_data_points(x, y)
-    time_round()
+    time_round(logger)
 
-    log("Shifting time value so it starts at 0...")
+    logger.log("Shifting time value so it starts at 0...")
     x = [x[i] - min(x) for i in range(len(x))]
-    time_round()
+    time_round(logger)
     global ui_cleaned_data
     ui_cleaned_data = [x, y]
 
-    log("Getting shortest pulse length...")
+    logger.log("Getting shortest pulse length...")
     single_pulse_length = min([abs(x[i] - x[i + 2]) for i in range(len(y) - 2)])
-    log("Shortest pulse length: " + format(single_pulse_length, '.12f'))
-    time_round()
+    logger.log("Shortest pulse length: " + format(single_pulse_length, '.12f'))
+    time_round(logger)
 
-    log("Decoding data...")
+    logger.log("Decoding data...")
     decoded_data, error = decode_normalized_data(x, y, single_pulse_length)
     decoded_string_data = ''.join(str(val) for val in decoded_data)
-    log("Decoded data: " + decoded_string_data)
-    time_round()
+    logger.log("Decoded data: " + decoded_string_data)
+    time_round(logger)
 
     return {
         "date": datetime.now().strftime("%d.%m.%Y %H:%M:%S"),
@@ -150,6 +149,10 @@ def getArguments():
     return parser.parse_args()
 
 
+def calculateAsnyc(file, return_dict, logger):
+    return_dict[os.path.basename(file)] = calculate(file, logger)
+
+
 def main():
     time_start()
     args = getArguments()
@@ -160,16 +163,31 @@ def main():
 
     #Get all files
     file_paths = ([os.path.join(args.input, f) for f in os.listdir(args.input) if f.endswith('.bin')] if os.path.isdir(args.input) else [args.input])
-    result = {}
-    for file in file_paths:
-        result[os.path.basename(file)] = calculate(file)
 
-    log("# # # # # # # # # # # # # # # # # # # # # #")
-    log("Writing output file...")
+    result = {}
+
+    # Turn off logging and run multiple threads when there is more then 1 file
+    if len(file_paths) > 1:
+        logger.off()
+        threads = []
+        tempResult = Manager().dict()
+        for file in file_paths:
+            t = Process(target=calculateAsnyc, args=(file, tempResult, logger))
+            t.start()
+            threads.append(t)
+        for thread in threads:
+            thread.join()
+        result.update(tempResult)
+    else:
+        for file in file_paths:
+            result[os.path.basename(file)] = calculate(file, logger)
+
+    logger.log("# # # # # # # # # # # # # # # # # # # # # #")
+    logger.log("Writing output file...")
     path = write_output(args.output if args.output else "./", result)
-    log("Written file: " + path)
+    logger.log("Written file: " + path)
     time_overall()
-    log("# # # # # # # # # # # # # # # # # # # # # #")
+    logger.log("# # # # # # # # # # # # # # # # # # # # # #")
     if len(file_paths) is 1 and args.graph:
         ui.showTwoGraphs(ui_raw_data, ui_cleaned_data)
 
