@@ -19,7 +19,7 @@ mainPath = os.path.join(basePath, 'src\decode.py')
 mainPath = args.script if args.script else mainPath
 inputPath = os.path.join(basePath, 'test\samples')
 outputPath = os.path.join(basePath, 'test\output')
-startCommand = ' '.join([mainPath, "-i=" + inputPath, "-o=" + outputPath])
+startCommand = ' '.join([mainPath, '-i="' + inputPath + '"', '-o="' + outputPath + '"'])
 
 #webfetchMainPath = os.path.join(basePath, 'src\webfetch.py')
 #webfetchOutputPath = os.path.join(basePath, 'test\webfetch_output')
