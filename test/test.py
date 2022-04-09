@@ -31,13 +31,13 @@ startCommand = ' '.join([mainPath, "-i=" + inputPath, "-o=" + outputPath])
 #print(startWebfetchCommand)
 #os.system(startWebfetchCommand)
 
+startCommand = "python " + startCommand if not args.script else startCommand
 print("TEST: Starting DECODE test")
 print("TEST: main path:", mainPath)
 print("TEST: input path", inputPath)
 print("TEST: output path", outputPath)
 print("TEST: start command", startCommand)
 
-startCommand = "python " + startCommand if not args.script else startCommand
 os.system(startCommand)
 
 files = glob.glob(os.path.join(outputPath, '*json'))
